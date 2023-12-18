@@ -15,8 +15,6 @@ Servicio completo de gestión de productos en el inventario, incluyendo la creac
 * Endpoint para registrar una venta al detal.
 * Endpoint para registrar una venta al por mayor. 
 
-![ambiente](https://viewer.diagrams.net/?tags=%7B%7D&highlight=0000ff&edit=_blank&layers=1&nav=1&title=sofka_inventory_environment.drawio#Uhttps%3A%2F%2Fdrive.google.com%2Fuc%3Fid%3D1M-XkW9-_1miFfePK96hZXP5HFG670nKt%26export%3Ddownload)
-
 # Configuraciones env
 
 ```
@@ -29,12 +27,3 @@ PORTDB=27017
 DBNAMEINVENTORY=sofkaInventario
 
 ```
-
-# Diagrama de flujo de la aplicación
-
-![flujo](https://viewer.diagrams.net/?tags=%7B%7D&highlight=0000ff&edit=_blank&layers=1&nav=1&title=sofka_inventory_use_cases.drawio#Uhttps%3A%2F%2Fdrive.google.com%2Fuc%3Fid%3D17lQH3qLx26bKYb0P-Sjw7tMik-Trstjb%26export%3Ddownload)
-
-# Base de datos
-
-![bd](https://viewer.diagrams.net/?tags=%7B%7D&highlight=0000ff&edit=_blank&layers=1&nav=1&title=sofka_inventory_data_bases.drawio#Uhttps%3A%2F%2Fdrive.google.com%2Fuc%3Fid%3D12h546jJLPn9_RMEG6BsZi2aB_6W_8k0g%26export%3Ddownload)
-
