@@ -2,13 +2,10 @@ package com.sofka.service.app.infraestructure.entryPoint.dto;
 
 import java.math.BigDecimal;
 
-import org.springframework.validation.annotation.Validated;
-
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-@Validated
 public class ProductCreateDto {
 
 	@NotNull
