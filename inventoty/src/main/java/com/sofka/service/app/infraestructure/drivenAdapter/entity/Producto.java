@@ -70,4 +70,39 @@ public class Producto {
 		this.codigo = codigo;
 	}
 
+	/* Builder */
+
+	public static Producto cerateProducto() {
+		return new Producto();
+	}
+
+	public Producto id(String id) {
+		this.id = id;
+		return this;
+	}
+
+	public Producto nombre(String nombre) {
+		this.nombre = nombre;
+		return this;
+	}
+
+	public Producto descripcion(String descripcion) {
+		this.descripcion = descripcion;
+		return this;
+	}
+
+	public Producto precio(BigDecimal precio) {
+		this.precio = precio;
+		return this;
+	}
+
+	public Producto codigo(String codigo) {
+		this.codigo = codigo;
+		return this;
+	}
+
+	public Producto build() {
+		return this;
+	}
+
 }
