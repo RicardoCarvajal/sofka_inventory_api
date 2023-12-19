@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.sofka.service.app.infraestructure.drivenAdapter.entity.Producto;
-import com.sofka.service.app.infraestructure.entryPoint.dto.ProductDto;
+import com.sofka.service.app.infraestructure.entryPoint.dto.ProductCreateDto;
 import com.sofka.service.app.infraestructure.entryPoint.handler.ProductHandler;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 public class ProductRouter {
 
 	@Bean
-	@RouterOperation(path = "/api/product", produces = MediaType.APPLICATION_JSON_VALUE, beanClass = ProductHandler.class, beanMethod = "createProduct", method = RequestMethod.POST, operation = @Operation(operationId = "createProduct", tags = "Caso de uso crear producto", requestBody = @RequestBody(required = true, description = "Producto a ser creado", content = @Content(schema = @Schema(implementation = ProductDto.class))), responses = {
+	@RouterOperation(path = "/api/product", produces = MediaType.APPLICATION_JSON_VALUE, beanClass = ProductHandler.class, beanMethod = "createProduct", method = RequestMethod.POST, operation = @Operation(operationId = "createProduct", tags = "Caso de uso crear producto", requestBody = @RequestBody(required = true, description = "Producto a ser creado", content = @Content(schema = @Schema(implementation = ProductCreateDto.class))), responses = {
 			@ApiResponse(responseCode = "201", description = "Producto creado satisfactoriamente", content = @Content(schema = @Schema(implementation = Producto.class))),
 			@ApiResponse(responseCode = "400", description = "Data de entrada errada", content = @Content()) }))
 	public RouterFunction<ServerResponse> createAccount(ProductHandler productHandler) {

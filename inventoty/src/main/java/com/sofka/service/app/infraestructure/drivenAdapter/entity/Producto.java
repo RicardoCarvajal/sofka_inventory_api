@@ -15,15 +15,22 @@ public class Producto {
 
 	private String descripcion;
 
-	private BigDecimal precio;
+	private BigDecimal precioDetal;
+
+	private BigDecimal precioMayor;
+
+	private Integer existencia;
 
 	private String codigo;
 
-	public Producto(String id, String nombre, String descripcion, BigDecimal precio, String codigo) {
+	public Producto(String id, String nombre, String descripcion, BigDecimal precioDetal, BigDecimal precioMayor,
+			Integer existencia, String codigo) {
 		this.id = id;
 		this.nombre = nombre;
 		this.descripcion = descripcion;
-		this.precio = precio;
+		this.precioDetal = precioDetal;
+		this.precioMayor = precioMayor;
+		this.existencia = existencia;
 		this.codigo = codigo;
 	}
 
@@ -54,12 +61,28 @@ public class Producto {
 		this.descripcion = descripcion;
 	}
 
-	public BigDecimal getPrecio() {
-		return precio;
+	public BigDecimal getPrecioDetal() {
+		return precioDetal;
 	}
 
-	public void setPrecio(BigDecimal precio) {
-		this.precio = precio;
+	public void setPrecioDetal(BigDecimal precioDetal) {
+		this.precioDetal = precioDetal;
+	}
+
+	public BigDecimal getPrecioMayor() {
+		return precioMayor;
+	}
+
+	public void setPrecioMayor(BigDecimal precioMayor) {
+		this.precioMayor = precioMayor;
+	}
+
+	public Integer getExistencia() {
+		return existencia;
+	}
+
+	public void setExistencia(Integer existencia) {
+		this.existencia = existencia;
 	}
 
 	public String getCodigo() {
@@ -91,13 +114,23 @@ public class Producto {
 		return this;
 	}
 
-	public Producto precio(BigDecimal precio) {
-		this.precio = precio;
+	public Producto precioDetal(BigDecimal precioDetal) {
+		this.precioDetal = precioDetal;
+		return this;
+	}
+
+	public Producto precioMayor(BigDecimal precioMayor) {
+		this.precioMayor = precioMayor;
 		return this;
 	}
 
 	public Producto codigo(String codigo) {
 		this.codigo = codigo;
+		return this;
+	}
+
+	public Producto existencia(Integer existencia) {
+		this.existencia = existencia;
 		return this;
 	}
 

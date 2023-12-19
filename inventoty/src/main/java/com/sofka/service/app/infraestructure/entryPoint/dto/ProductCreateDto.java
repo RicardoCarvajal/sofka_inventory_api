@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 @Validated
-public class ProductDto {
+public class ProductCreateDto {
 
 	@NotNull
 	@NotEmpty
@@ -21,20 +21,31 @@ public class ProductDto {
 
 	@NotNull
 	@Min(1)
-	private BigDecimal cost;
+	private BigDecimal retailPrice;
+
+	@NotNull
+	@Min(1)
+	private BigDecimal mayorPrice;
 
 	@NotNull
 	@NotEmpty
 	private String code;
 
-	public ProductDto(String name, String description, BigDecimal cost, String code) {
+	@NotNull
+	@Min(1)
+	private Integer stock;
+
+	public ProductCreateDto(String name, String description, BigDecimal retailPrice, BigDecimal mayorPrice, String code,
+			Integer stock) {
 		this.name = name;
 		this.description = description;
-		this.cost = cost;
+		this.retailPrice = retailPrice;
+		this.mayorPrice = mayorPrice;
 		this.code = code;
+		this.stock = stock;
 	}
 
-	public ProductDto() {
+	public ProductCreateDto() {
 	}
 
 	public String getName() {
@@ -53,12 +64,20 @@ public class ProductDto {
 		this.description = description;
 	}
 
-	public BigDecimal getCost() {
-		return cost;
+	public BigDecimal getRetailPrice() {
+		return retailPrice;
 	}
 
-	public void setCost(BigDecimal cost) {
-		this.cost = cost;
+	public void setRetailPrice(BigDecimal retailPrice) {
+		this.retailPrice = retailPrice;
+	}
+
+	public BigDecimal getMayorPrice() {
+		return mayorPrice;
+	}
+
+	public void setMayorPrice(BigDecimal mayorPrice) {
+		this.mayorPrice = mayorPrice;
 	}
 
 	public String getCode() {
@@ -67,6 +86,14 @@ public class ProductDto {
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	public Integer getStock() {
+		return stock;
+	}
+
+	public void setStock(Integer stock) {
+		this.stock = stock;
 	}
 
 }

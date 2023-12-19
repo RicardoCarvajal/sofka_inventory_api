@@ -2,6 +2,7 @@ package com.sofka.service.app.infraestructure.entryPoint.handler;
 
 import java.net.URI;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -11,9 +12,11 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.sofka.service.app.domain.useCase.CreateProductUseCase;
+import com.sofka.service.app.infraestructure.drivenAdapter.bus.ISenderQueue;
 import com.sofka.service.app.infraestructure.drivenAdapter.entity.Producto;
-import com.sofka.service.app.infraestructure.entryPoint.dto.ProductDto;
-import com.sofka.service.app.infraestructure.entryPoint.dto.ResponseDto;
+import com.sofka.service.app.infraestructure.entryPoint.dto.ErrorResponseDto;
+import com.sofka.service.app.infraestructure.entryPoint.dto.ProductCreateDto;
+import com.sofka.service.app.infraestructure.entryPoint.dto.ResponseProductCreateDto;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import reactor.core.publisher.Flux;
@@ -26,39 +29,45 @@ public class ProductHandler {
 
 	private final Validator validator;
 
-	public ProductHandler(CreateProductUseCase createProductUseCase, Validator validator) {
+	private final ISenderQueue senderQueueProduct;
+
+	public ProductHandler(CreateProductUseCase createProductUseCase, Validator validator,
+			@Qualifier("SenderQueueProduct") ISenderQueue senderQueueProduct) {
 		this.createProductUseCase = createProductUseCase;
 		this.validator = validator;
+		this.senderQueueProduct = senderQueueProduct;
 	}
 
 	public Mono<ServerResponse> createProduct(ServerRequest request) {
 
-		Mono<ProductDto> product = request.bodyToMono(ProductDto.class);
+		Mono<ProductCreateDto> product = request.bodyToMono(ProductCreateDto.class);
 
 		return product.flatMap(p -> {
 
-			Errors errors = new BeanPropertyBindingResult(p, ProductDto.class.getName());
+			Errors errors = new BeanPropertyBindingResult(p, ProductCreateDto.class.getName());
 			validator.validate(p, errors);
 
 			if (errors.hasErrors()) {
 				return Flux.fromIterable(errors.getFieldErrors())
 						.map(fieldError -> "El campo " + fieldError.getField() + " " + fieldError.getDefaultMessage())
 						.collectList().flatMap(list -> {
+							senderQueueProduct.senderQueueError(p);
 							return ServerResponse.badRequest()
-									.bodyValue(ResponseDto.createResponseDto()
+									.bodyValue(ErrorResponseDto.building()
 											.codeResponse(HttpResponseStatus.BAD_REQUEST.code())
-											.message("Error en la captura de datos").data(list).build());
+											.message("Error en la captura de datos").message(list).build());
 						});
 			} else {
 				return createProductUseCase.create(Producto.cerateProducto().descripcion(p.getDescription())
-						.codigo(p.getCode()).precio(p.getCost()).nombre(p.getName()).build())
-						.flatMap(productDataBase -> {
+						.codigo(p.getCode()).precioMayor(p.getMayorPrice()).precioDetal(p.getRetailPrice())
+						.nombre(p.getName()).existencia(p.getStock()).build()).flatMap(productDataBase -> {
+							senderQueueProduct.senderQueueSuccess(productDataBase);
 							return ServerResponse.created(URI.create("/api/product/"))
 									.contentType(MediaType.APPLICATION_JSON)
-									.bodyValue(ResponseDto.createResponseDto()
+									.bodyValue(ResponseProductCreateDto.building()
 											.codeResponse(HttpResponseStatus.CREATED.code())
-											.message("Producto creado satisfactoriamente").data(productDataBase)
-											.build());
+											.message("Producto creado satisfactoriamente")
+											.idProduct(productDataBase.getId()).build());
 						});
 			}
 		});
