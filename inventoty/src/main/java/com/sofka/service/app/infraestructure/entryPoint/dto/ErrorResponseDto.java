@@ -7,7 +7,7 @@ public class ErrorResponseDto {
 
 	private Integer codeResponse;
 
-	private List<String> message;
+	private List<String> message = new ArrayList<String>();
 
 	public ErrorResponseDto(Integer codeResponse, List<String> message) {
 		this.codeResponse = codeResponse;
@@ -50,7 +50,6 @@ public class ErrorResponseDto {
 	}
 
 	public ErrorResponseDto message(String message) {
-		this.message = new ArrayList<String>();
 		this.message.add(message);
 		return this;
 	}
