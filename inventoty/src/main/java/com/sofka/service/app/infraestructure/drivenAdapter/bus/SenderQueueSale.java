@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 import reactor.rabbitmq.OutboundMessage;
 import reactor.rabbitmq.Sender;
 
-@Component
+@Component("SenderQueueSale")
 public class SenderQueueSale implements ISenderQueue {
 
 	Logger log = LoggerFactory.getLogger(SenderQueueSale.class);
