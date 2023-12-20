@@ -17,6 +17,46 @@ public class VentaDetalle {
 
 	private BigDecimal totalcost;
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+
+	public Integer getCantidad() {
+		return cantidad;
+	}
+
+	public void setCantidad(Integer cantidad) {
+		this.cantidad = cantidad;
+	}
+
+	public BigDecimal getTotalcost() {
+		return totalcost;
+	}
+
+	public void setTotalcost(BigDecimal totalcost) {
+		this.totalcost = totalcost;
+	}
+
 	public static VentaDetalle building() {
 		return new VentaDetalle();
 	}

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 import com.sofka.service.app.conf.RabbitConf;
+import com.sofka.service.app.infraestructure.drivenAdapter.entity.Venta;
+import com.sofka.service.app.infraestructure.entryPoint.dto.MovementSaleDto;
 
 import reactor.core.publisher.Mono;
 import reactor.rabbitmq.OutboundMessage;
@@ -30,18 +32,31 @@ public class SenderQueueSale implements ISenderQueue {
 	@Override
 	public void senderQueueSuccess(Object object) {
 
-		log.info("Enviando data a " + " cola: " + RabbitConf.QUEUE + " data: " + gson.toJson(object));
-		sender.send(Mono.just(new OutboundMessage(RabbitConf.EXCHANGE_NAME_1, RabbitConf.ROUTING_KEY_NAME_1,
-				gson.toJson(object).getBytes()))).subscribe();
+		if (object instanceof Venta) {
+
+			Venta venta = ((Venta) object);
+			String id = venta.getId();
+
+			MovementSaleDto movement = MovementSaleDto.building().idObject(id).typeProcess(SALE_PROCESS)
+					.description(SALE_PROCESS_DESCRIPTION).object(object).typeSale(venta.getTipo()).build();
+
+			log.info("Enviando data a " + " cola: " + RabbitConf.QUEUE + " data: " + gson.toJson(movement));
+			sender.send(Mono.just(new OutboundMessage(RabbitConf.EXCHANGE_NAME_1, RabbitConf.ROUTING_KEY_NAME_1,
+					gson.toJson(movement).getBytes()))).subscribe();
+
+		}
 
 	}
 
 	@Override
 	public void senderQueueError(Object object) {
 
-		log.info("Enviando data a " + " cola: " + RabbitConf.QUEUE + " data: " + gson.toJson(object));
+		MovementSaleDto movement = MovementSaleDto.building().typeProcess(SALE_PROCESS)
+				.description(SALE_PROCESS_DESCRIPTION).isError(true).object(object).build();
+
+		log.info("Enviando data a " + " cola: " + RabbitConf.QUEUE + " data: " + gson.toJson(movement));
 		sender.send(Mono.just(new OutboundMessage(RabbitConf.EXCHANGE_NAME_1, RabbitConf.ROUTING_KEY_NAME_1,
-				gson.toJson(object).getBytes()))).subscribe();
+				gson.toJson(movement).getBytes()))).subscribe();
 
 	}
 
