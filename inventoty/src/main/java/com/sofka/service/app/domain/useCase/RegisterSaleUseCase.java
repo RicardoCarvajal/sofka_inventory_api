@@ -14,6 +14,7 @@ public class RegisterSaleUseCase {
 
 	public RegisterSaleUseCase(IVentaRepository iVentaRepository) {
 		this.iVentaRepository = iVentaRepository;
+
 	}
 
 	public Mono<Venta> register(Venta venta) {

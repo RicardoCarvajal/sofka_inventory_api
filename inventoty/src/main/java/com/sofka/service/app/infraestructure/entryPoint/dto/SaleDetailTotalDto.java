@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotNull;
 
 public class SaleDetailTotalDto {
 
+	private String id;
+
 	@NotNull
 	@NotEmpty
 	private String name;
@@ -29,6 +31,14 @@ public class SaleDetailTotalDto {
 	private BigDecimal totalCost;
 
 	public SaleDetailTotalDto() {
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -73,6 +83,11 @@ public class SaleDetailTotalDto {
 
 	public static SaleDetailTotalDto building() {
 		return new SaleDetailTotalDto();
+	}
+
+	public SaleDetailTotalDto id(String id) {
+		this.id = id;
+		return this;
 	}
 
 	public SaleDetailTotalDto name(String name) {

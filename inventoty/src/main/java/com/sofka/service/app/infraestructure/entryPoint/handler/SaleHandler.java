@@ -41,14 +41,18 @@ public class SaleHandler {
 
 	private final ISenderQueue senderQueueSale;
 
+	private final ISenderQueue senderQueueProduct;
+
 	public SaleHandler(@Qualifier("CreateSaleRetailUseCase") ICreateSaleUseCase iCreateSaleRetailUseCase,
 			Validator validator, @Qualifier("CreateSaleMayorUseCase") ICreateSaleUseCase iCreateSaleMayorUseCase,
-			RegisterSaleUseCase registerSaleUseCase, @Qualifier("SenderQueueSale") ISenderQueue senderQueueSale) {
+			RegisterSaleUseCase registerSaleUseCase, @Qualifier("SenderQueueSale") ISenderQueue senderQueueSale,
+			@Qualifier("SenderQueueProduct") ISenderQueue senderQueueProduct) {
 		this.iCreateSaleRetailUseCase = iCreateSaleRetailUseCase;
 		this.iCreateSaleMayorUseCase = iCreateSaleMayorUseCase;
 		this.registerSaleUseCase = registerSaleUseCase;
 		this.validator = validator;
 		this.senderQueueSale = senderQueueSale;
+		this.senderQueueProduct = senderQueueProduct;
 
 	}
 
@@ -133,8 +137,9 @@ public class SaleHandler {
 
 				Venta ventaToDataBase = Venta.building().total(s.getTotal()).tipo(s.getTipo())
 						.detalles(s.getDatail().stream()
-								.map(d -> VentaDetalle.building().name(d.getName()).descripcion(d.getDescription())
-										.price(d.getPrice()).cantidad(d.getQuantity()).totalcost(d.getTotalCost()))
+								.map(d -> VentaDetalle.building().id(d.getId()).name(d.getName())
+										.descripcion(d.getDescription()).price(d.getPrice()).cantidad(d.getQuantity())
+										.totalcost(d.getTotalCost()))
 								.toList())
 						.build();
 

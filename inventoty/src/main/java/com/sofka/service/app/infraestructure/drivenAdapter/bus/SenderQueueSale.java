@@ -40,8 +40,8 @@ public class SenderQueueSale implements ISenderQueue {
 			MovementSaleDto movement = MovementSaleDto.building().idObject(id).typeProcess(SALE_PROCESS)
 					.description(SALE_PROCESS_DESCRIPTION).object(object).typeSale(venta.getTipo()).build();
 
-			log.info("Enviando data a " + " cola: " + RabbitConf.QUEUE + " data: " + gson.toJson(movement));
-			sender.send(Mono.just(new OutboundMessage(RabbitConf.EXCHANGE_NAME_1, RabbitConf.ROUTING_KEY_NAME_1,
+			log.info("Enviando data a " + " cola: " + RabbitConf.QUEUES + " data: " + gson.toJson(movement));
+			sender.send(Mono.just(new OutboundMessage(RabbitConf.EXCHANGE_NAME_2, RabbitConf.ROUTING_KEY_NAME_2,
 					gson.toJson(movement).getBytes()))).subscribe();
 
 		}
@@ -54,8 +54,8 @@ public class SenderQueueSale implements ISenderQueue {
 		MovementSaleDto movement = MovementSaleDto.building().typeProcess(SALE_PROCESS)
 				.description(SALE_PROCESS_DESCRIPTION).isError(true).object(object).build();
 
-		log.info("Enviando data a " + " cola: " + RabbitConf.QUEUE + " data: " + gson.toJson(movement));
-		sender.send(Mono.just(new OutboundMessage(RabbitConf.EXCHANGE_NAME_1, RabbitConf.ROUTING_KEY_NAME_1,
+		log.info("Enviando data a " + " cola: " + RabbitConf.QUEUES + " data: " + gson.toJson(movement));
+		sender.send(Mono.just(new OutboundMessage(RabbitConf.EXCHANGE_NAME_2, RabbitConf.ROUTING_KEY_NAME_2,
 				gson.toJson(movement).getBytes()))).subscribe();
 
 	}

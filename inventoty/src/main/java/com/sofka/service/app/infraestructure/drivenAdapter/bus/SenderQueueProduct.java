@@ -45,7 +45,7 @@ public class SenderQueueProduct implements ISenderQueue {
 			MovementProductDto movement = MovementProductDto.building().idObject(id).typeProcess(PRODUCT_PROCESS)
 					.description(PRODUCT_PROCESS_DESCRIPTION).object(object).quantity(quantity).build();
 
-			log.info("Enviando data a " + " cola: " + RabbitConf.QUEUE + " data: " + gson.toJson(movement));
+			log.info("Enviando data a " + " cola: " + RabbitConf.QUEUEP + " data: " + gson.toJson(movement));
 			sender.send(Mono.just(new OutboundMessage(RabbitConf.EXCHANGE_NAME_1, RabbitConf.ROUTING_KEY_NAME_1,
 					gson.toJson(movement).getBytes()))).subscribe();
 
@@ -58,7 +58,7 @@ public class SenderQueueProduct implements ISenderQueue {
 		MovementProductDto movement = MovementProductDto.building().typeProcess(PRODUCT_PROCESS)
 				.description(PRODUCT_PROCESS_DESCRIPTION).isError(true).object(object).build();
 
-		log.info("Enviando data a " + " cola: " + RabbitConf.QUEUE + " data: " + gson.toJson(movement));
+		log.info("Enviando data a " + " cola: " + RabbitConf.QUEUEP + " data: " + gson.toJson(movement));
 		sender.send(Mono.just(new OutboundMessage(RabbitConf.EXCHANGE_NAME_1, RabbitConf.ROUTING_KEY_NAME_1,
 				gson.toJson(movement).getBytes()))).subscribe();
 

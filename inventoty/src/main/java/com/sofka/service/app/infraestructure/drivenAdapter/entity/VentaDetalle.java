@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class VentaDetalle {
 
+	private String id;
+
 	private String name;
 
 	private String descripcion;
@@ -57,8 +59,21 @@ public class VentaDetalle {
 		this.totalcost = totalcost;
 	}
 
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public static VentaDetalle building() {
 		return new VentaDetalle();
+	}
+
+	public VentaDetalle id(String id) {
+		this.id = id;
+		return this;
 	}
 
 	public VentaDetalle name(String name) {

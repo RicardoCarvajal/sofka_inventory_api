@@ -34,7 +34,7 @@ public class CreateSaleMayorUseCase implements ICreateSaleUseCase {
 
 					return SaleDetailTotalDto.building().name(p.getNombre()).description(p.getDescripcion())
 							.price(p.getPrecioMayor()).quantity(quantity)
-							.totalCost(p.getPrecioMayor().multiply(new BigDecimal(quantity))).build();
+							.totalCost(p.getPrecioMayor().multiply(new BigDecimal(quantity))).id(p.getId()).build();
 
 				}).collectList().map(list -> {
 

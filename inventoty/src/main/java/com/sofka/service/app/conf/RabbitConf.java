@@ -23,8 +23,6 @@ import com.rabbitmq.client.ConnectionFactory;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import reactor.rabbitmq.RabbitFlux;
-import reactor.rabbitmq.Receiver;
-import reactor.rabbitmq.ReceiverOptions;
 import reactor.rabbitmq.Sender;
 import reactor.rabbitmq.SenderOptions;
 
@@ -32,11 +30,15 @@ import reactor.rabbitmq.SenderOptions;
 public class RabbitConf {
 
 	Logger logger = LoggerFactory.getLogger(RabbitConf.class);
-	
-	public static final String QUEUE = "sofkaApi-traicing";
 
-	public static final String EXCHANGE_NAME_1 = "sofkaApi-traicing-exchange";
-	public static final String ROUTING_KEY_NAME_1 = "sofkaApi.traicing.routing.key";	
+	public static final String QUEUEP = "sofkaApi-traicing-product";
+	public static final String QUEUES = "sofkaApi-traicing-sale";
+
+	public static final String EXCHANGE_NAME_1 = "sofkaApi-product-exchange";
+	public static final String ROUTING_KEY_NAME_1 = "sofkaApi.product.routing.key";
+
+	public static final String EXCHANGE_NAME_2 = "sofkaApi-sale-exchange";
+	public static final String ROUTING_KEY_NAME_2 = "sofkaApi.dale.routing.key";
 
 	@Value("${app.rabbit.url}")
 	public String uri_name;
@@ -48,13 +50,20 @@ public class RabbitConf {
 		CachingConnectionFactory connectionFactory = new CachingConnectionFactory(URI.create(uri_name));
 		var amqpAdmin = new RabbitAdmin(connectionFactory);
 
-		var exchange = new TopicExchange(EXCHANGE_NAME_1);
-		var queue = new Queue(QUEUE, true, false, false);
+		var exchangep = new TopicExchange(EXCHANGE_NAME_1);
+		var queuep = new Queue(QUEUEP, true, false, false);
 
-		amqpAdmin.declareExchange(exchange);
-		amqpAdmin.declareQueue(queue);
+		var exchanges = new TopicExchange(EXCHANGE_NAME_2);
+		var queues = new Queue(QUEUES, true, false, false);
 
-		amqpAdmin.declareBinding(BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY_NAME_1));
+		amqpAdmin.declareExchange(exchangep);
+		amqpAdmin.declareQueue(queuep);
+
+		amqpAdmin.declareExchange(exchanges);
+		amqpAdmin.declareQueue(queues);
+
+		amqpAdmin.declareBinding(BindingBuilder.bind(queuep).to(exchangep).with(ROUTING_KEY_NAME_1));
+		amqpAdmin.declareBinding(BindingBuilder.bind(queues).to(exchanges).with(ROUTING_KEY_NAME_2));
 
 		return amqpAdmin;
 	}

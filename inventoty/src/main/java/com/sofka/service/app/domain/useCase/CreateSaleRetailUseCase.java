@@ -34,7 +34,7 @@ public class CreateSaleRetailUseCase implements ICreateSaleUseCase {
 
 					return SaleDetailTotalDto.building().name(p.getNombre()).description(p.getDescripcion())
 							.price(p.getPrecioDetal()).quantity(quantity)
-							.totalCost(p.getPrecioDetal().multiply(new BigDecimal(quantity))).build();
+							.totalCost(p.getPrecioDetal().multiply(new BigDecimal(quantity))).id(p.getId()).build();
 
 				}).collectList().map(list -> {
 
