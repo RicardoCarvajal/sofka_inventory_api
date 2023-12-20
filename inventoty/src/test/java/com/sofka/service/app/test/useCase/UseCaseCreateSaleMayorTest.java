@@ -14,17 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.sofka.service.app.domain.useCase.CreateSaleMayorUseCase;
+import com.sofka.service.app.domain.useCase.CreateSaleRetailUseCase;
 import com.sofka.service.app.infraestructure.entryPoint.dto.ProductDetailDto;
 
 import reactor.test.StepVerifier;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UseCaseCreateSaleRetailTest {
+public class UseCaseCreateSaleMayorTest {
 
 	@Autowired
-	private CreateSaleMayorUseCase createSaleMayorUseCase;
+	private CreateSaleRetailUseCase createSaleRetailUseCase;
 
 	@Test
 	void create() {
@@ -43,11 +43,11 @@ public class UseCaseCreateSaleRetailTest {
 		products.add(productsDto1);
 		products.add(productsDto2);
 
-		var result = createSaleMayorUseCase.generate(products);
+		var result = createSaleRetailUseCase.generate(products);
 
 		StepVerifier.create(result).assertNext(p -> {
 			assertNotNull(p);
-			assertEquals(p.getTotal(), new BigDecimal(1031.05).setScale(2, RoundingMode.HALF_UP));
+			assertEquals(p.getTotal(), new BigDecimal(1303.05).setScale(2, RoundingMode.HALF_UP));
 			System.out.println(p.getTotal());
 		}).verifyComplete();
 

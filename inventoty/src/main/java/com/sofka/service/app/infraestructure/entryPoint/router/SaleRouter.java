@@ -33,4 +33,11 @@ public class SaleRouter {
 		return route(POST("/api/sale/retail"), saleHandler::generateSaleRetail);
 	}
 
+	@Bean
+	@RouterOperation(path = "/api/sale/mayor", produces = MediaType.APPLICATION_JSON_VALUE, beanClass = SaleHandler.class, beanMethod = "generateSaleMayor", method = RequestMethod.POST, operation = @Operation(operationId = "generateSaleMayor", tags = "Caso de uso crear venta", requestBody = @RequestBody(required = true, description = "Producto a ser creado", content = @Content(schema = @Schema(implementation = ProductDetailDto.class))), responses = {
+			@ApiResponse(responseCode = "201", description = "Venta creada satisfactoriamente", content = @Content(schema = @Schema(implementation = ResponseSaleCreateDto.class))),
+			@ApiResponse(responseCode = "400", description = "Data de entrada errada", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))) }))
+	public RouterFunction<ServerResponse> generateSaleMayor(SaleHandler saleHandler) {
+		return route(POST("/api/sale/mayor"), saleHandler::generateSaleMayor);
+	}
 }

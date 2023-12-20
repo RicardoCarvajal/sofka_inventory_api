@@ -14,7 +14,6 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.sofka.service.app.domain.useCase.ICreateSaleUseCase;
-import com.sofka.service.app.infraestructure.drivenAdapter.bus.ISenderQueue;
 import com.sofka.service.app.infraestructure.entryPoint.dto.ErrorResponseDto;
 import com.sofka.service.app.infraestructure.entryPoint.dto.ProductCreateDto;
 import com.sofka.service.app.infraestructure.entryPoint.dto.ProductDetailDto;
@@ -29,15 +28,16 @@ public class SaleHandler {
 
 	private final ICreateSaleUseCase iCreateSaleRetailUseCase;
 
+	private final ICreateSaleUseCase iCreateSaleMayorUseCase;
+
 	private final Validator validator;
 
-	private final ISenderQueue senderQueueSale;
-
 	public SaleHandler(@Qualifier("CreateSaleRetailUseCase") ICreateSaleUseCase iCreateSaleRetailUseCase,
-			Validator validator, @Qualifier("SenderQueueSale") ISenderQueue senderQueueSale) {
+			Validator validator, @Qualifier("CreateSaleMayorUseCase") ICreateSaleUseCase iCreateSaleMayorUseCase) {
 		this.iCreateSaleRetailUseCase = iCreateSaleRetailUseCase;
+		this.iCreateSaleMayorUseCase = iCreateSaleMayorUseCase;
 		this.validator = validator;
-		this.senderQueueSale = senderQueueSale;
+
 	}
 
 	public Mono<ServerResponse> generateSaleRetail(ServerRequest request) {
@@ -55,6 +55,35 @@ public class SaleHandler {
 			});
 
 			return iCreateSaleRetailUseCase.generate(list).flatMap(sale -> {
+
+				return ServerResponse.created(URI.create("/api/sale/")).contentType(MediaType.APPLICATION_JSON)
+						.bodyValue(ResponseSaleCreateDto.building().codeResponse(HttpResponseStatus.CREATED.code())
+								.message("Venta creada satisfactoriamente").sale(sale).build());
+			});
+
+		}).onErrorResume(e -> {
+			return ServerResponse.badRequest()
+					.bodyValue(ErrorResponseDto.building().codeResponse(HttpResponseStatus.BAD_REQUEST.code())
+							.message("Error en la captura de datos").message(e.getMessage()).build());
+		});
+
+	}
+
+	public Mono<ServerResponse> generateSaleMayor(ServerRequest request) {
+
+		Flux<ProductDetailDto> product = request.bodyToFlux(ProductDetailDto.class);
+
+		return product.collectList().flatMap(list -> {
+
+			list.forEach(p -> {
+				Errors errors = new BeanPropertyBindingResult(p, ProductCreateDto.class.getName());
+				validator.validate(p, errors);
+				if (errors.hasErrors())
+					throw new RuntimeErrorException(null,
+							"Articulo con dato errado [" + errors.getFieldError().getField() + "]");
+			});
+
+			return iCreateSaleMayorUseCase.generate(list).flatMap(sale -> {
 
 				return ServerResponse.created(URI.create("/api/sale/")).contentType(MediaType.APPLICATION_JSON)
 						.bodyValue(ResponseSaleCreateDto.building().codeResponse(HttpResponseStatus.CREATED.code())
