@@ -1,5 +1,6 @@
 package com.sofka.service.app.infraestructure.entryPoint.router;
 
+import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
@@ -15,6 +16,8 @@ import com.sofka.service.app.infraestructure.entryPoint.dto.ErrorResponseDto;
 import com.sofka.service.app.infraestructure.entryPoint.dto.ProductCreateDto;
 import com.sofka.service.app.infraestructure.entryPoint.dto.ResponseProductCreateDto;
 import com.sofka.service.app.infraestructure.entryPoint.dto.ResponseProductsCreateDto;
+import com.sofka.service.app.infraestructure.entryPoint.dto.ResponseProductsDto;
+import com.sofka.service.app.infraestructure.entryPoint.dto.SortPageCriteriaDto;
 import com.sofka.service.app.infraestructure.entryPoint.handler.ProductHandler;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,6 +43,14 @@ public class ProductRouter {
 			@ApiResponse(responseCode = "400", description = "Data de entrada errada", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))) }))
 	public RouterFunction<ServerResponse> createProducts(ProductHandler productHandler) {
 		return route(POST("/api/products"), productHandler::createProducts);
+	}
+
+	@Bean
+	@RouterOperation(path = "/api/products", produces = MediaType.APPLICATION_JSON_VALUE, beanClass = ProductHandler.class, beanMethod = "getProducts", method = RequestMethod.GET, operation = @Operation(operationId = "getProducts", tags = "Caso de uso obtener productos", requestBody = @RequestBody(required = true, description = "Producto a ser creado", content = @Content(schema = @Schema(implementation = SortPageCriteriaDto.class))), responses = {
+			@ApiResponse(responseCode = "200", description = "Productos encontrados", content = @Content(schema = @Schema(implementation = ResponseProductsDto.class))),
+			@ApiResponse(responseCode = "400", description = "Data de entrada errada", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))) }))
+	public RouterFunction<ServerResponse> getProducts(ProductHandler productHandler) {
+		return route(GET("/api/products"), productHandler::getProducts);
 	}
 
 }

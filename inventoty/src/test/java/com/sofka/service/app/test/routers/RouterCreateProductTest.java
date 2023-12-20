@@ -28,8 +28,14 @@ public class RouterCreateProductTest {
 	@Test
 	void createProductTest() {
 
-		ProductCreateDto productoDto = new ProductCreateDto("laptop dell 14", "laptop dell 32G RAM, 1TB de ROM, i7",
-				new BigDecimal(1000), new BigDecimal(1000), "LA-86514A", 40);
+		ProductCreateDto productoDto = new ProductCreateDto();
+
+		productoDto.setCode("LA-86514A");
+		productoDto.setDescription("laptop dell 32G RAM, 1TB de ROM, i7");
+		productoDto.setName("laptop dell 14");
+		productoDto.setMayorPrice(new BigDecimal(1000));
+		productoDto.setRetailPrice(new BigDecimal(1000));
+		productoDto.setStock(40);
 
 		client.post().uri("/api/product").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
 				.body(Mono.just(productoDto), ProductCreateDto.class).exchange().expectStatus().isCreated()

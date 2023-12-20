@@ -20,12 +20,15 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.sofka.service.app.domain.useCase.CreateProductUseCase;
 import com.sofka.service.app.domain.useCase.CreateProductsUseCase;
+import com.sofka.service.app.domain.useCase.GetProductsUseCase;
 import com.sofka.service.app.infraestructure.drivenAdapter.bus.ISenderQueue;
 import com.sofka.service.app.infraestructure.drivenAdapter.entity.Producto;
 import com.sofka.service.app.infraestructure.entryPoint.dto.ErrorResponseDto;
 import com.sofka.service.app.infraestructure.entryPoint.dto.ProductCreateDto;
 import com.sofka.service.app.infraestructure.entryPoint.dto.ResponseProductCreateDto;
 import com.sofka.service.app.infraestructure.entryPoint.dto.ResponseProductsCreateDto;
+import com.sofka.service.app.infraestructure.entryPoint.dto.ResponseProductsDto;
+import com.sofka.service.app.infraestructure.entryPoint.dto.SortPageCriteriaDto;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import reactor.core.publisher.Flux;
@@ -38,15 +41,18 @@ public class ProductHandler {
 
 	private final CreateProductsUseCase createProductsUseCase;
 
+	private final GetProductsUseCase getProductsUseCase;
+
 	private final Validator validator;
 
 	private final ISenderQueue senderQueueProduct;
 
 	public ProductHandler(CreateProductUseCase createProductUseCase, Validator validator,
 			@Qualifier("SenderQueueProduct") ISenderQueue senderQueueProduct,
-			CreateProductsUseCase createProductsUseCase) {
+			CreateProductsUseCase createProductsUseCase, GetProductsUseCase getProductsUseCase) {
 		this.createProductUseCase = createProductUseCase;
 		this.createProductsUseCase = createProductsUseCase;
+		this.getProductsUseCase = getProductsUseCase;
 		this.validator = validator;
 		this.senderQueueProduct = senderQueueProduct;
 	}
@@ -112,6 +118,48 @@ public class ProductHandler {
 									.message("No se pudo cargar el archivo").message(e.getMessage()).build());
 
 				});
+
+	}
+
+	public Mono<ServerResponse> getProducts(ServerRequest request) {
+
+		SortPageCriteriaDto sortPageCriteriaDto = new SortPageCriteriaDto();
+
+		request.queryParam("elements").ifPresent(string -> {
+			if (!string.isEmpty())
+				sortPageCriteriaDto.setElements(Integer.valueOf(string));
+		});
+
+		request.queryParam("page").ifPresent(string -> {
+			if (!string.isEmpty())
+				sortPageCriteriaDto.setPage(Integer.valueOf(string));
+		});
+
+		Mono<SortPageCriteriaDto> sortPage = Mono.just(sortPageCriteriaDto);
+
+		return sortPage.flatMap(s -> {
+
+			Errors errors = new BeanPropertyBindingResult(s, SortPageCriteriaDto.class.getName());
+			validator.validate(s, errors);
+
+			if (errors.hasErrors()) {
+				return Flux.fromIterable(errors.getFieldErrors())
+						.map(fieldError -> "El campo " + fieldError.getField() + " " + fieldError.getDefaultMessage())
+						.collectList().flatMap(list -> {
+							return ServerResponse.badRequest()
+									.bodyValue(ErrorResponseDto.building()
+											.codeResponse(HttpResponseStatus.BAD_REQUEST.code())
+											.message("Error en la captura de datos").message(list).build());
+						});
+			} else {
+				return getProductsUseCase.get(s).collectList()
+						.flatMap(list -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+								.bodyValue(ResponseProductsDto.building().codeResponse(HttpResponseStatus.OK.code())
+										.message("productos encontrados de manera exitosa").size(list.size())
+										.products(list).build()));
+
+			}
+		});
 
 	}
 

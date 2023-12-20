@@ -1,6 +1,7 @@
 package com.sofka.service.app.infraestructure.entryPoint.dto;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -31,16 +32,6 @@ public class ProductCreateDto {
 	@NotNull
 	@Min(1)
 	private Integer stock;
-
-	public ProductCreateDto(String name, String description, BigDecimal retailPrice, BigDecimal mayorPrice, String code,
-			Integer stock) {
-		this.name = name;
-		this.description = description;
-		this.retailPrice = retailPrice;
-		this.mayorPrice = mayorPrice;
-		this.code = code;
-		this.stock = stock;
-	}
 
 	public ProductCreateDto() {
 	}
@@ -91,6 +82,31 @@ public class ProductCreateDto {
 
 	public void setStock(Integer stock) {
 		this.stock = stock;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(code, description, mayorPrice, name, retailPrice, stock);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ProductCreateDto other = (ProductCreateDto) obj;
+		return Objects.equals(code, other.code) && Objects.equals(description, other.description)
+				&& Objects.equals(mayorPrice, other.mayorPrice) && Objects.equals(name, other.name)
+				&& Objects.equals(retailPrice, other.retailPrice) && Objects.equals(stock, other.stock);
+	}
+
+	@Override
+	public String toString() {
+		return "ProductCreateDto [name=" + name + ", description=" + description + ", retailPrice=" + retailPrice
+				+ ", mayorPrice=" + mayorPrice + ", code=" + code + ", stock=" + stock + "]";
 	}
 
 }
