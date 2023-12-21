@@ -98,7 +98,7 @@
 				<executions>
 					<execution>
 						<id>my-exec</id>
-						<phase>pre-integration-test</phase>
+						<phase>install</phase>
 						<goals>
 							<goal>exec</goal>
 						</goals>
