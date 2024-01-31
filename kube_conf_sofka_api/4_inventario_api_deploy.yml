@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sofka-inventario-api-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sofka-inventario-api-app
+  template:
+    metadata:
+      labels:
+        app: sofka-inventario-api-app
+    spec:
+      containers:
+      - name: sofka-inventario-api-app
+        image: rcarvajalf/sofkainventotyapi:0.0.2
+        ports:
+        - containerPort: 8080
+        env:
+        - name: HOSTDB
+          valueFrom:
+            configMapKeyRef:
+              name: service-conf
+              key: HOSTDB
+        - name: PORTDB
+          valueFrom:
+            configMapKeyRef:
+              name: service-conf
+              key: PORTDB
+        - name: DBNAMEINVENTORY
+          valueFrom:
+            configMapKeyRef:
+              name: service-conf
+              key: DBNAMEINVENTORY
+        - name: RABBITURL
+          valueFrom:
+            configMapKeyRef:
+              name: service-conf
+              key: RABBITURL
+        - name: PORTAPPSOFKAINVENTORY
+          valueFrom:
+            configMapKeyRef:
+              name: service-conf
+              key: PORTAPPSOFKAINVENTORY
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sofka-inventario-api-app-service
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30000
+  selector:            
+    app: sofka-inventario-api-app

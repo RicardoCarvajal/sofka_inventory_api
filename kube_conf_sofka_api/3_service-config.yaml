@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-conf
+data:
+  PORTAPPSOFKAINVENTORY: "8080"
+  PORTAPPSOFKAMONITOR: "8081"
+  RABBITURL: "amqp://guest:guest@rabbitmq-service:5672"
+  HOSTDB: "mongodb-service"
+  PORTDB: "27017"
+  DBNAMEINVENTORY: "sofkaInventario"
+  DBNAMEMONITOR: "sofkaSeguimiento"
